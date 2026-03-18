@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo Futsaleros - Speed Sport</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #8B0000;
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 2000px;
+      margin: 0 auto;
+      padding: 25px;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0 0 10px 0;
+      font-size: 34px;
+    }
+
+    .subtitulo {
+      text-align: center;
+      margin: 0 0 24px 0;
+      color: #666;
+      font-size: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #8B0000;
+      
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 10px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .code {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      transition: 0.2s ease;
+      background: #25D366;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.92;
+    }
+
+    .wa-icon {
+      width: 18px;
+      height: 18px;
+      fill: white;
+      flex-shrink: 0;
+    }
+
+    .mensaje {
+      text-align: center;
+      padding: 30px 10px;
+      color: #666;
+      font-size: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .subtitulo {
+        font-size: 14px;
+        margin-bottom: 18px;
+      }
+
+      
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .card {
+        padding: 8px;
+        border-radius: 10px;
+      }
+
+      .card img {
+        border-radius: 8px;
+        margin-bottom: 8px;
+      }
+
+      .code {
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .btn {
+        font-size: 12px;
+        padding: 8px 6px;
+      }
+
+      .wa-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Futsaleros</h1>
+    <p class="subtitulo">🔥 Elige tu modelo favorito y escríbenos por WhatsApp</p>
+
+
+
+
+
+    
+
+    <div class="grid" id="catalogo"></div>
+    <div class="mensaje" id="mensaje">Cargando catálogo...</div>
+  </div>
+
+  <script>
+    const numero = "51912381233";
+
+    fetch("imagenes.txt")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("No se pudo leer imagenes.txt");
+        }
+        return response.text();
+      })
+      .then(data => {
+        const links = data
+          .split("\n")
+          .map(l => l.trim())
+          .filter(l => l !== "");
+
+        const contenedor = document.getElementById("catalogo");
+        const mensaje = document.getElementById("mensaje");
+
+        if (links.length === 0) {
+          mensaje.textContent = "No hay imágenes en el catálogo.";
+          return;
+        }
+
+        mensaje.style.display = "none";
+
+        links.forEach(link => {
+          let nombre = link.split("/").pop().split(".")[0];
+          nombre = nombre.split("_")[0];
+
+          const waLink =
+  `https://wa.me/${numero}?text=` +
+  `🔥%20Me%20gusta%20este%20diseño%0A%0A` +
+  `👕%20Modelo:%20${encodeURIComponent(nombre)}%0A` +
+  `🖼️%20Imagen:%20${encodeURIComponent(link)}%0A%0A` +
+  `Me gusta este Diseño`;
+
+          const card = `
+            <div class="card">
+              <img src="${link}" alt="${nombre}">
+              <div class="code">${nombre}</div>
+              <a href="${waLink}" target="_blank" class="btn">
+                <svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M19.11 17.21c-.27-.14-1.58-.78-1.82-.87-.24-.09-.41-.14-.58.14-.17.27-.67.87-.82 1.04-.15.18-.31.2-.58.07-.27-.14-1.14-.42-2.18-1.35-.81-.72-1.36-1.61-1.52-1.88-.16-.27-.02-.42.12-.56.13-.13.27-.31.41-.47.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.47-.07-.14-.58-1.39-.79-1.9-.21-.5-.42-.43-.58-.44h-.49c-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.27 0 1.34.97 2.64 1.11 2.82.14.18 1.91 2.92 4.63 4.09.65.28 1.16.45 1.56.58.65.21 1.24.18 1.71.11.52-.08 1.58-.65 1.8-1.28.22-.63.22-1.17.16-1.28-.06-.11-.23-.18-.5-.31zM16.03 3.2c-7.07 0-12.8 5.73-12.8 12.8 0 2.26.59 4.38 1.62 6.23L3.2 28.8l6.72-1.61a12.74 12.74 0 0 0 6.11 1.56h.01c7.07 0 12.8-5.73 12.8-12.8S23.1 3.2 16.03 3.2zm0 23.31h-.01a10.53 10.53 0 0 1-5.37-1.47l-.38-.23-3.99.96.98-3.89-.25-.4a10.5 10.5 0 1 1 9.02 5.03z"/>
+                </svg>
+                Me gusta este modelo
+              </a>
+            </div>
+          `;
+
+          contenedor.innerHTML += card;
+        });
+      })
+      .catch(error => {
+        const mensaje = document.getElementById("mensaje");
+        mensaje.textContent = "No se pudo cargar el catálogo.";
+        console.error(error);
+      });
+  </script>
+
+</body>
+</html>
