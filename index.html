@@ -12,8 +12,7 @@
 
     body {
       font-family: Arial, sans-serif;
-      background: #ffffff;
-
+      background: #8B0000;
       margin: 0;
       padding: 0;
       color: #ffffff;
@@ -34,7 +33,7 @@
     .subtitulo {
       text-align: center;
       margin: 0 0 24px 0;
-      color: #666;
+      color: #f1d7d7;
       font-size: 15px;
     }
 
@@ -46,11 +45,14 @@
 
     .card {
       background: #ffffff;
-      
       border-radius: 14px;
       padding: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       text-align: center;
+    }
+
+    .img-click {
+      cursor: pointer;
     }
 
     .card img {
@@ -68,6 +70,7 @@
       font-size: 18px;
       margin-bottom: 10px;
       word-break: break-word;
+      color: #111;
     }
 
     .btn {
@@ -101,8 +104,45 @@
     .mensaje {
       text-align: center;
       padding: 30px 10px;
-      color: #666;
+      color: #f1d7d7;
       font-size: 16px;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      padding: 20px;
+    }
+
+    .modal-contenido {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .modal-img {
+      max-width: 95%;
+      max-height: 92%;
+      border-radius: 12px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+    }
+
+    .cerrar {
+      position: absolute;
+      top: 10px;
+      right: 18px;
+      color: white;
+      font-size: 42px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
     }
 
     @media (max-width: 600px) {
@@ -118,8 +158,6 @@
         font-size: 14px;
         margin-bottom: 18px;
       }
-
-      
 
       .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -150,6 +188,21 @@
         width: 16px;
         height: 16px;
       }
+
+      .modal {
+        padding: 10px;
+      }
+
+      .cerrar {
+        top: 6px;
+        right: 12px;
+        font-size: 34px;
+      }
+
+      .modal-img {
+        max-width: 100%;
+        max-height: 88%;
+      }
     }
   </style>
 </head>
@@ -159,18 +212,48 @@
     <h1>Futsaleros</h1>
     <p class="subtitulo">🔥 Elige tu modelo favorito y escríbenos por WhatsApp</p>
 
-
-
-
-
-    
-
     <div class="grid" id="catalogo"></div>
     <div class="mensaje" id="mensaje">Cargando catálogo...</div>
   </div>
 
+  <!-- MODAL -->
+  <div id="modal" class="modal">
+    <div class="modal-contenido">
+      <span class="cerrar" id="cerrarModal">&times;</span>
+      <img class="modal-img" id="imgGrande" src="" alt="Vista previa">
+    </div>
+  </div>
+
   <script>
     const numero = "51912381233";
+
+    function abrirModal(src) {
+      const modal = document.getElementById("modal");
+      const img = document.getElementById("imgGrande");
+      img.src = src;
+      modal.style.display = "block";
+    }
+
+    function cerrarModal() {
+      const modal = document.getElementById("modal");
+      const img = document.getElementById("imgGrande");
+      modal.style.display = "none";
+      img.src = "";
+    }
+
+    document.getElementById("cerrarModal").addEventListener("click", cerrarModal);
+
+    document.getElementById("modal").addEventListener("click", function(e) {
+      if (e.target.id === "modal") {
+        cerrarModal();
+      }
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        cerrarModal();
+      }
+    });
 
     fetch("imagenes.txt")
       .then(response => {
@@ -200,15 +283,15 @@
           nombre = nombre.split("_")[0];
 
           const waLink =
-  `https://wa.me/${numero}?text=` +
-  `🔥%20Me%20gusta%20este%20diseño%0A%0A` +
-  `👕%20Modelo:%20${encodeURIComponent(nombre)}%0A` +
-  `🖼️%20Imagen:%20${encodeURIComponent(link)}%0A%0A` +
-  `Me gusta este Diseño`;
+            `https://wa.me/${numero}?text=` +
+            `🔥%20Me%20gusta%20este%20diseño%0A%0A` +
+            `👕%20Modelo:%20${encodeURIComponent(nombre)}%0A` +
+            `🖼️%20Imagen:%20${encodeURIComponent(link)}%0A%0A` +
+            `Me%20gusta%20este%20Diseño`;
 
           const card = `
             <div class="card">
-              <img src="${link}" alt="${nombre}">
+              <img src="${link}" alt="${nombre}" class="img-click" onclick="abrirModal('${link}')">
               <div class="code">${nombre}</div>
               <a href="${waLink}" target="_blank" class="btn">
                 <svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true">
