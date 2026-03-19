@@ -18,13 +18,15 @@ body{
 /* 🔥 BANNER */
 .banner{
   width:100%;
-  position: relative;
+  height:220px; /* 🔥 controla el alto */
+  overflow:hidden;
 }
 
 .banner img{
   width:100%;
-  height:auto; /* 🔥 clave */
-  display:block;
+  height:100%;
+  object-fit:cover; /* 🔥 recorta automáticamente */
+  object-position:center; /* 🔥 centra el recorte */
 }
 
 /* 🔥 LOGO SOBRE NER */
@@ -78,7 +80,7 @@ body{
 
 /* CARD */
 .card{
-  background:#D5AFC5;
+  background:#c0d8; /* COLOR CARD */
   border-radius:14px;
   padding:14px;
   box-shadow:0 6px 18px rgba(0,0,0,0.12);
