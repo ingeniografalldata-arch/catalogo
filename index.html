@@ -15,26 +15,22 @@
       background: hsla(0, 11%, 89%, 0.959);
       margin: 0;
       padding: 0;
-      color: #ffffff;
+      color: #000;
     }
 
-    <div class="banner">
-  <img src="banerfut.png" alt="Modelos Futsaleros">
-</div>
-
     .banner {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 20px;
-}
+      width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-.banner img {
-  width: 100%;
-  max-width: 1200px;
-  height: auto;
-  border-radius: 12px;
-}
-    
+    .banner img {
+      width: 100%;
+      max-width: 1200px;
+      height: auto;
+      border-radius: 12px;
+    }
+
     .container {
       max-width: 2000px;
       margin: 0 auto;
@@ -68,26 +64,12 @@
       text-align: center;
     }
 
-    .img-click {
-      cursor: pointer;
-    }
-
     .card img {
       width: 100%;
-      height: auto;
       aspect-ratio: 3 / 4;
       object-fit: cover;
       border-radius: 10px;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .code {
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 10px;
-      word-break: break-word;
-      color: #111;
+      cursor: pointer;
     }
 
     .btn {
@@ -96,32 +78,30 @@
       justify-content: center;
       gap: 8px;
       width: 100%;
-      margin-top: 8px;
-      padding: 10px 12px;
+      margin-top: 10px;
+      padding: 10px;
       border-radius: 9px;
       text-decoration: none;
       font-size: 14px;
       font-weight: bold;
-      transition: 0.2s ease;
       background: #25D366;
       color: white;
     }
 
     .btn:hover {
-      opacity: 0.92;
+      opacity: 0.9;
     }
 
     .wa-icon {
       width: 18px;
       height: 18px;
       fill: white;
-      flex-shrink: 0;
     }
 
     .mensaje {
       text-align: center;
       padding: 30px 10px;
-      color: #f1d7d7;
+      color: #444;
       font-size: 16px;
     }
 
@@ -129,101 +109,42 @@
     .modal {
       display: none;
       position: fixed;
-      z-index: 9999;
       inset: 0;
-      background: rgba(0, 0, 0, 0.92);
-      padding: 20px;
-    }
-
-    .modal-contenido {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
+      background: rgba(0,0,0,0.9);
+      z-index: 9999;
       justify-content: center;
-      position: relative;
+      align-items: center;
     }
 
-    .modal-img {
+    .modal img {
       max-width: 95%;
-      max-height: 92%;
+      max-height: 90%;
       border-radius: 12px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.45);
     }
 
     .cerrar {
       position: absolute;
-      top: 10px;
-      right: 18px;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
       color: white;
-      font-size: 42px;
-      font-weight: bold;
       cursor: pointer;
-      line-height: 1;
     }
 
-    @media (max-width: 600px) {
-      .container {
-        padding: 12px;
-      }
-
-      h1 {
-        font-size: 26px;
-      }
-
-      .subtitulo {
-        font-size: 14px;
-        margin-bottom: 18px;
-      }
-
+    @media (max-width:600px){
       .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .card {
-        padding: 8px;
-        border-radius: 10px;
-      }
-
-      .card img {
-        border-radius: 8px;
-        margin-bottom: 8px;
-      }
-
-      .code {
-        font-size: 14px;
-        margin-bottom: 8px;
-      }
-
-      .btn {
-        font-size: 12px;
-        padding: 8px 6px;
-      }
-
-      .wa-icon {
-        width: 16px;
-        height: 16px;
-      }
-
-      .modal {
-        padding: 10px;
-      }
-
-      .cerrar {
-        top: 6px;
-        right: 12px;
-        font-size: 34px;
-      }
-
-      .modal-img {
-        max-width: 100%;
-        max-height: 88%;
+        grid-template-columns: repeat(2,1fr);
       }
     }
   </style>
 </head>
+
 <body>
+
+  <!-- 🔥 BANNER -->
+  <div class="banner">
+    <img src="banerfut.png" alt="Modelos Futsaleros">
+  </div>
 
   <div class="container">
     <h1>Futsaleros</h1>
@@ -235,100 +156,54 @@
 
   <!-- MODAL -->
   <div id="modal" class="modal">
-    <div class="modal-contenido">
-      <span class="cerrar" id="cerrarModal">&times;</span>
-      <img class="modal-img" id="imgGrande" src="" alt="Vista previa">
-    </div>
+    <span class="cerrar" onclick="cerrarModal()">&times;</span>
+    <img id="imgGrande">
   </div>
 
   <script>
     const numero = "51912381233";
 
-    function abrirModal(src) {
-      const modal = document.getElementById("modal");
-      const img = document.getElementById("imgGrande");
-      img.src = src;
-      modal.style.display = "block";
+    function abrirModal(src){
+      document.getElementById("modal").style.display = "flex";
+      document.getElementById("imgGrande").src = src;
     }
 
-    function cerrarModal() {
-      const modal = document.getElementById("modal");
-      const img = document.getElementById("imgGrande");
-      modal.style.display = "none";
-      img.src = "";
+    function cerrarModal(){
+      document.getElementById("modal").style.display = "none";
     }
-
-    document.getElementById("cerrarModal").addEventListener("click", cerrarModal);
-
-    document.getElementById("modal").addEventListener("click", function(e) {
-      if (e.target.id === "modal") {
-        cerrarModal();
-      }
-    });
-
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "Escape") {
-        cerrarModal();
-      }
-    });
 
     fetch("imagenes.txt")
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("No se pudo leer imagenes.txt");
-        }
-        return response.text();
-      })
-      .then(data => {
-        const links = data
-          .split("\n")
-          .map(l => l.trim())
-          .filter(l => l !== "");
+    .then(res => res.text())
+    .then(data => {
 
-        const contenedor = document.getElementById("catalogo");
-        const mensaje = document.getElementById("mensaje");
+      const links = data.split("\n").map(l=>l.trim()).filter(l=>l);
 
-        if (links.length === 0) {
-          mensaje.textContent = "No hay imágenes en el catálogo.";
-          return;
-        }
+      const contenedor = document.getElementById("catalogo");
+      const mensaje = document.getElementById("mensaje");
 
-        mensaje.style.display = "none";
+      mensaje.style.display = "none";
 
-        links.forEach(link => {
-          let nombre = link.split("/").pop().split(".")[0];
-          nombre = nombre.split("_")[0];
+      links.forEach(link => {
 
-          const waLink =
-            `https://wa.me/${numero}?text=` +
-            `🔥%20Me%20gusta%20este%20diseño%0A%0A` +
-            `👕%20Modelo:%20${encodeURIComponent(nombre)}%0A` +
-            `🖼️%20Imagen:%20${encodeURIComponent(link)}%0A%0A` +
-            `Me%20gusta%20este%20Diseño`;
+        let nombre = link.split("/").pop().split(".")[0];
+        nombre = nombre.split("_")[0];
 
-          
+        const wa =
+        `https://wa.me/${numero}?text=` +
+        `🔥 Me gusta este diseño%0A%0A` +
+        `👕 Modelo: ${encodeURIComponent(nombre)}%0A` +
+        `🖼️ Imagen: ${encodeURIComponent(link)}`;
 
-          const card = `
-            <div class="card">
-              <img src="${link}" alt="${nombre}" class="img-click" onclick="abrirModal('${link}')">
-              <div class="code">${nombre}</div>
-              <a href="${waLink}" target="_blank" class="btn">
-                <svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true">
-                  <path d="M19.11 17.21c-.27-.14-1.58-.78-1.82-.87-.24-.09-.41-.14-.58.14-.17.27-.67.87-.82 1.04-.15.18-.31.2-.58.07-.27-.14-1.14-.42-2.18-1.35-.81-.72-1.36-1.61-1.52-1.88-.16-.27-.02-.42.12-.56.13-.13.27-.31.41-.47.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.47-.07-.14-.58-1.39-.79-1.9-.21-.5-.42-.43-.58-.44h-.49c-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.27 0 1.34.97 2.64 1.11 2.82.14.18 1.91 2.92 4.63 4.09.65.28 1.16.45 1.56.58.65.21 1.24.18 1.71.11.52-.08 1.58-.65 1.8-1.28.22-.63.22-1.17.16-1.28-.06-.11-.23-.18-.5-.31zM16.03 3.2c-7.07 0-12.8 5.73-12.8 12.8 0 2.26.59 4.38 1.62 6.23L3.2 28.8l6.72-1.61a12.74 12.74 0 0 0 6.11 1.56h.01c7.07 0 12.8-5.73 12.8-12.8S23.1 3.2 16.03 3.2zm0 23.31h-.01a10.53 10.53 0 0 1-5.37-1.47l-.38-.23-3.99.96.98-3.89-.25-.4a10.5 10.5 0 1 1 9.02 5.03z"/>
-                </svg>
-                Me gusta este modelo
-              </a>
-            </div>
-          `;
-
-          contenedor.innerHTML += card;
-        });
-      })
-      .catch(error => {
-        const mensaje = document.getElementById("mensaje");
-        mensaje.textContent = "No se pudo cargar el catálogo.";
-        console.error(error);
+        contenedor.innerHTML += `
+          <div class="card">
+            <img src="${link}" onclick="abrirModal('${link}')">
+            <a href="${wa}" target="_blank" class="btn">
+              💬 Me gusta este modelo
+            </a>
+          </div>
+        `;
       });
+    });
   </script>
 
 </body>
