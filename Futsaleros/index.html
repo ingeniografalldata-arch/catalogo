@@ -15,33 +15,12 @@ body{
   margin:0;
 }
 
-/* LOGO VOLVER */
-.logo-btn{
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 9999;
-  background: rgba(255,255,255,0.9);
-  padding: 6px 10px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: 0.2s;
-}
-
-.logo-btn img{
-  height: 40px;
-  display: block;
-}
-
-.logo-btn:hover{
-  transform: scale(1.05);
-}
-
-/* BANNER */
+/* 🔥 BANNER */
 .banner{
   width:100%;
   height:220px;
   overflow:hidden;
+  position: relative; /* 🔥 clave para el logo */
 }
 
 .banner img{
@@ -49,6 +28,25 @@ body{
   height:100%;
   object-fit:cover;
   display:block;
+}
+
+/* 🔥 LOGO SOBRE BANNER */
+.logo-btn{
+  position:absolute;
+  top:15px;
+  left:20px;
+  z-index:10;
+}
+
+.logo-btn img{
+  height:28px;
+  opacity:0.95;
+  transition:0.2s;
+}
+
+.logo-btn:hover img{
+  transform:scale(1.08);
+  opacity:1;
 }
 
 /* CONTENEDOR */
@@ -86,7 +84,7 @@ body{
 }
 
 .card:hover img{
-  transform: scale(1.08);
+  transform:scale(1.08);
 }
 
 /* BOTON */
@@ -112,7 +110,7 @@ body{
 }
 
 .btn:active{
-  transform: scale(0.96);
+  transform:scale(0.96);
 }
 
 /* MODAL */
@@ -141,7 +139,7 @@ body{
   cursor:pointer;
 }
 
-/* CELULAR */
+/* 📱 CELULAR */
 @media (max-width:600px){
 
   .banner{
@@ -163,7 +161,7 @@ body{
   }
 
   .logo-btn img{
-    height:30px;
+    height:22px;
   }
 }
 </style>
@@ -178,9 +176,16 @@ body{
 
 <!-- 🔥 BANNER -->
 <div class="banner">
-  <img src="https://res.cloudinary.com/dxzvkiqra/image/upload/f_auto,q_auto,c_fill,w_1600,h_300/banerfut_jabrqy.png">
-</div>
 
+  <!-- 🔥 LOGO SOBRE EL BANNER -->
+  <a href="https://www.speedsport.pe" class="logo-btn">
+    <img src="https://res.cloudinary.com/dxzvkiqra/image/upload/f_auto,q_auto/logo.png_ykzuh2.png">
+  </a>
+
+  <!-- 🔥 IMAGEN DEL BANNER -->
+  <img src="https://res.cloudinary.com/dxzvkiqra/image/upload/f_auto,q_auto,c_fill,w_1600,h_300/banerfut_jabrqy.png">
+
+</div>
 <div class="container">
   <div class="grid" id="catalogo"></div>
 </div>
