@@ -16,7 +16,7 @@ body{
 
 .banner {
   width: 100%;
-  height: 220px; /* 🔥 más grande en PC */
+  height: 200px; /* 🔥 más grande en PC */
   overflow: hidden;
 }
 
@@ -28,9 +28,9 @@ body{
 }
 
 /* 📱 CELULAR */
-@media (max-width:600px){
+@media (max-width:400px){
   .banner {
-    height: 90px; /* 🔥 compacto en celular */
+    height: 70px; /* 🔥 compacto en celular */
   }
 }
 
@@ -58,11 +58,20 @@ body{
 }
 
 .card img{
-  width:100%;
-  border-radius:10px;
-  cursor:pointer;
+  width: 100%;
+  height: 280px; /* 🔥 tamaño uniforme */
+  object-fit: cover; /* 🔥 recorte limpio */
+  border-radius: 10px;
+  cursor: pointer;
 }
 
+  @media (max-width:600px){
+  .card img{
+    height: 180px;
+  }
+}
+
+  
 /* BOTON WHATSAPP */
 .btn{
   margin-top:10px;
