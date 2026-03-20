@@ -206,12 +206,38 @@ function fechaEntregaMas7Dias(){
   });
 }
 
-fetch(API)
-.then(res => res.json())
-.then(data => {
-  const contenedor = document.getElementById("catalogo");
+/* desde aca poner el nuevo codigo */
 
-  data.forEach(item => {
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDIo_-P6TV2ZkDIo_fVzq_Ty0Z_xMtZHM",
+  authDomain: "stockingenio.firebaseapp.com",
+  projectId: "stockingenio",
+  storageBucket: "stockingenio.firebasestorage.app",
+  messagingSenderId: "1052238909039",
+  appId: "1:1052238909039:web:bd620817ee76e9853a66aa"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const contenedor = document.getElementById("catalogo");
+
+async function cargarCatalogo(){
+  const ref = doc(db, "catalogos", "stock");
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    console.log("No hay datos");
+    return;
+  }
+
+  const data = snap.data();
+
+  data.productos.forEach(item => {
     const tallas = obtenerTallasDisponibles(item);
     const hayStock = tallas.length > 0 && Number(item.stock) > 0;
 
@@ -248,18 +274,20 @@ fetch(API)
     contenedor.innerHTML += `
       <div class="card">
         <img src="${item.link}" alt="${item.codigo}">
-        ${estadoHtml}
-        ${tallasHtml}
-        ${botonHtml}
-        ${entregaHtml}
+        <div class="card-content">
+          ${estadoHtml}
+          ${tallasHtml}
+          ${botonHtml}
+          ${entregaHtml}
+        </div>
       </div>
     `;
   });
-})
-.catch(err => {
-  console.error("Error cargando stock:", err);
-});
+}
+
+cargarCatalogo();
 </script>
+  
 
 </body>
 </html>
