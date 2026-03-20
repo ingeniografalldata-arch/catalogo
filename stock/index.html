@@ -6,10 +6,13 @@
 <title>Stock Disponible</title>
 
 <style>
+*{box-sizing:border-box;}
+
 body{
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   margin:0;
   background:#f2f2f2;
+  color:#111;
 }
 
 .container{
@@ -18,37 +21,106 @@ body{
   padding:20px;
 }
 
+h2{
+  margin:0 0 20px 0;
+}
+
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:20px;
 }
 
 .card{
   background:#fff;
   border-radius:12px;
-  padding:10px;
+  padding:12px;
   text-align:center;
   box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
 .card img{
   width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
   border-radius:10px;
-  cursor:pointer;
+  display:block;
+  margin-bottom:12px;
+}
+
+.estado{
+  font-weight:bold;
+  margin-bottom:8px;
+  font-size:15px;
+}
+
+.estado.ok{
+  color:#138a36;
+}
+
+.estado.preventa{
+  color:#c46b00;
+}
+
+.tallas{
+  font-size:14px;
+  color:#333;
+  margin-bottom:10px;
+  min-height:38px;
+}
+
+.entrega{
+  font-size:13px;
+  color:#666;
+  margin-top:8px;
 }
 
 .btn{
   display:block;
   margin-top:10px;
   padding:10px;
-  background:#25D366;
   color:white;
   text-decoration:none;
   border-radius:8px;
   font-weight:bold;
 }
 
+.btn-stock{
+  background:#25D366;
+}
+
+.btn-preventa{
+  background:#111;
+}
+
+@media (max-width:600px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+
+  .card{
+    padding:10px;
+  }
+
+  .estado{
+    font-size:13px;
+  }
+
+  .tallas{
+    font-size:12px;
+    min-height:34px;
+  }
+
+  .btn{
+    font-size:13px;
+    padding:8px;
+  }
+
+  .entrega{
+    font-size:12px;
+  }
+}
 </style>
 </head>
 
@@ -60,40 +132,90 @@ body{
 </div>
 
 <script>
-
 const API = "https://script.google.com/macros/s/AKfycbxUvAfzyyLU1g10pjqeD56Ki_rK3MaqWPfWRNzu_b3TTRo2qLbyU6AU7BkGU905IhGg/exec?api=1";
-
 const numero = "51912381233";
+
+function obtenerTallasDisponibles(item){
+  const tallas = [];
+
+  if (Number(item.talla10) > 0) tallas.push("10");
+  if (Number(item.talla12) > 0) tallas.push("12");
+  if (Number(item.talla14) > 0) tallas.push("14");
+  if (Number(item.talla16) > 0) tallas.push("16");
+  if (Number(item.tallaS) > 0) tallas.push("S");
+  if (Number(item.tallaM) > 0) tallas.push("M");
+  if (Number(item.tallaL) > 0) tallas.push("L");
+  if (Number(item.tallaSD) > 0) tallas.push("SD");
+  if (Number(item.tallaMD) > 0) tallas.push("MD");
+  if (Number(item.tallaLD) > 0) tallas.push("LD");
+
+  return tallas;
+}
+
+function fechaEntregaMas7Dias(){
+  const fecha = new Date();
+  fecha.setDate(fecha.getDate() + 7);
+
+  return fecha.toLocaleDateString("es-PE", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+}
 
 fetch(API)
 .then(res => res.json())
 .then(data => {
-
   const contenedor = document.getElementById("catalogo");
 
   data.forEach(item => {
+    const tallas = obtenerTallasDisponibles(item);
+    const hayStock = tallas.length > 0 && Number(item.stock) > 0;
 
-    const waLink =
+    const mensajeStock =
       `https://wa.me/${numero}?text=` +
-      `🔥%20Quiero%20esta%20prenda%0A%0A` +
+      `🔥%20Quiero%20esta%20prenda%20en%20stock%0A%0A` +
       `👕%20Modelo:%20${encodeURIComponent(item.codigo)}%0A` +
+      `📏%20Tallas%20disponibles:%20${encodeURIComponent(tallas.join(", "))}%0A` +
       `🖼️%20Imagen:%20${encodeURIComponent(item.link)}`;
 
-    const card = `
+    const mensajePreventa =
+      `https://wa.me/${numero}?text=` +
+      `🟠%20Quiero%20pedir%20esta%20prenda%20en%20preventa%0A%0A` +
+      `👕%20Modelo:%20${encodeURIComponent(item.codigo)}%0A` +
+      `🖼️%20Imagen:%20${encodeURIComponent(item.link)}%0A` +
+      `📦%20Entrega%20estimada:%20${encodeURIComponent(fechaEntregaMas7Dias())}`;
+
+    const estadoHtml = hayStock
+      ? `<div class="estado ok">✅ Stock disponible</div>`
+      : `<div class="estado preventa">🟠 Sin stock inmediato</div>`;
+
+    const tallasHtml = hayStock
+      ? `<div class="tallas">Tallas disponibles: <strong>${tallas.join(", ")}</strong></div>`
+      : `<div class="tallas">Disponible bajo pedido</div>`;
+
+    const botonHtml = hayStock
+      ? `<a href="${mensajeStock}" target="_blank" class="btn btn-stock">🟢 Pedir por WhatsApp</a>`
+      : `<a href="${mensajePreventa}" target="_blank" class="btn btn-preventa">Pedir en preventa</a>`;
+
+    const entregaHtml = hayStock
+      ? ``
+      : `<div class="entrega">Entrega: ${fechaEntregaMas7Dias()}</div>`;
+
+    contenedor.innerHTML += `
       <div class="card">
-        <img src="${item.link}">
-        <a href="${waLink}" target="_blank" class="btn">
-          🟢 Pedir por WhatsApp
-        </a>
+        <img src="${item.link}" alt="${item.codigo}">
+        ${estadoHtml}
+        ${tallasHtml}
+        ${botonHtml}
+        ${entregaHtml}
       </div>
     `;
-
-    contenedor.innerHTML += card;
-
   });
-
+})
+.catch(err => {
+  console.error("Error cargando stock:", err);
 });
-
 </script>
 
 </body>
