@@ -44,18 +44,26 @@ h2{
 .card{
   background:#fff;
   border-radius:14px;
-  overflow:hidden; /* 🔥 clave */
-  padding:0;       /* 🔥 elimina espacios internos */
-  display:flex;
-  flex-direction:column;
+  padding:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+  text-align:center;
+  overflow:hidden;
 }
 
+/* IMAGEN */
 .card img{
-  width:50%;
-  height:auto;
-  display:block;
-  border-radius:0; /* 🔥 que no deje bordes blancos */
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  border-radius:12px;
+  cursor:pointer;
+  transition: transform 0.4s ease;
 }
+
+.card:hover img{
+  transform:scale(1.08);
+}
+
 
   .grid{
   align-items:stretch;
