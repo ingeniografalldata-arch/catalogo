@@ -39,13 +39,27 @@ h2{
   box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
+.card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
 .card img{
-  width:65%;
-  max-width:160px;
+  width:50%;              /* 🔥 tamaño ideal */
+  max-width:220px;        /* límite en PC */
   height:auto;
-  margin:0 auto 12px;
-  display:block;
   border-radius:10px;
+  margin-bottom:10px;
+}
+
+  .grid{
+  align-items:stretch;
+}
+
+.card{
+  height:100%;
+  justify-content:space-between;
 }
 
 .estado{
