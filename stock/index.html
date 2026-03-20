@@ -17,24 +17,23 @@ html, body{
 body{
   font-family:Arial, sans-serif;
   background:#f2f2f2;
-  color:#111;
 }
 
+/* CONTENEDOR */
 .container{
-  width:100%;
-  max-width:1200px;
+  max-width:1100px;
   margin:auto;
-  padding:20px 12px;
+  padding:20px;
 }
 
 h2{
-  margin:0 0 20px 0;
+  margin-bottom:20px;
 }
 
 /* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(4, 1fr); /* 🔥 4 columnas fijas */
+  grid-template-columns:repeat(4,1fr);
   gap:16px;
 }
 
@@ -44,13 +43,25 @@ h2{
   border-radius:14px;
   overflow:hidden;
   box-shadow:0 6px 18px rgba(0,0,0,0.12);
+  cursor:pointer;
+  transition:0.25s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
 }
 
 /* IMAGEN */
 .card img{
   width:100%;
-  height:auto;
-  display:block;
+  aspect-ratio:3/4;
+  object-fit:contain;
+  background:#fff;
+  transition: transform 0.4s ease;
+}
+
+.card:hover img{
+  transform:scale(1.08);
 }
 
 /* CONTENIDO */
@@ -77,12 +88,12 @@ h2{
   color:#666;
 }
 
-/* BOTONES */
+/* BOTÓN */
 .btn{
   display:block;
   margin-top:10px;
   padding:10px;
-  color:white;
+  color:#fff;
   text-decoration:none;
   border-radius:8px;
   font-weight:bold;
@@ -91,10 +102,46 @@ h2{
 .btn-stock{ background:#25D366; }
 .btn-preventa{ background:#111; }
 
-/* MOBILE */
+/* 🔥 MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.modal img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:12px;
+}
+
+.cerrar{
+  position:absolute;
+  top:20px;
+  right:30px;
+  color:#fff;
+  font-size:35px;
+  cursor:pointer;
+}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
 @media (max-width:600px){
   .grid{
     grid-template-columns:1fr;
+  }
+
+  .card:hover img{
+    transform:none;
   }
 }
 </style>
@@ -107,11 +154,17 @@ h2{
   <div class="grid" id="catalogo"></div>
 </div>
 
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <span class="cerrar" onclick="cerrarModal()">×</span>
+  <img id="imgModal">
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-/* 🔥 CONFIG FIREBASE */
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyDIo_-P6TV2ZkDIo_fVzq_Ty0Z_xMtZHM",
   authDomain: "stockingenio.firebaseapp.com",
@@ -156,61 +209,52 @@ function fechaEntregaMas7Dias(){
   });
 }
 
+/* MODAL */
+window.abrirModal = function(src){
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("imgModal").src = src;
+}
+
+window.cerrarModal = function(){
+  document.getElementById("modal").style.display = "none";
+}
+
 /* CARGAR DATOS */
 async function cargarCatalogo(){
   const ref = doc(db, "catalogos", "stock");
   const snap = await getDoc(ref);
 
-  if (!snap.exists()) {
-    console.log("No hay datos en Firebase");
-    return;
-  }
+  if (!snap.exists()) return;
 
   const productos = snap.data().productos;
 
   productos.forEach(item => {
 
     const tallas = obtenerTallasDisponibles(item);
-    const hayStock = tallas.length > 0 && item.stock > 0;
+    const hayStock = item.stock > 0;
 
     const mensajeStock =
-      `https://wa.me/${numero}?text=` +
-      `🔥%20Quiero%20esta%20prenda%20en%20stock%0A%0A` +
-      `👕%20Modelo:%20${encodeURIComponent(item.codigo)}%0A` +
-      `📏%20Tallas:%20${encodeURIComponent(tallas.join(", "))}%0A` +
-      `🖼️%20Imagen:%20${encodeURIComponent(item.link)}`;
+      `https://wa.me/${numero}?text=Quiero%20${item.codigo}`;
 
     const mensajePreventa =
-      `https://wa.me/${numero}?text=` +
-      `🟠%20Quiero%20preventa%0A%0A` +
-      `👕%20Modelo:%20${encodeURIComponent(item.codigo)}%0A` +
-      `🖼️%20Imagen:%20${encodeURIComponent(item.link)}%0A` +
-      `📦%20Entrega:%20${encodeURIComponent(fechaEntregaMas7Dias())}`;
-
-    const estadoHtml = hayStock
-      ? `<div class="estado ok">✅ Stock disponible</div>`
-      : `<div class="estado preventa">🟠 Preventa</div>`;
-
-    const tallasHtml = hayStock
-      ? `<div class="tallas">Tallas: <strong>${tallas.join(", ")}</strong></div>`
-      : `<div class="tallas">Disponible bajo pedido</div>`;
-
-    const botonHtml = hayStock
-      ? `<a href="${mensajeStock}" target="_blank" class="btn btn-stock">🟢 Pedir por WhatsApp</a>`
-      : `<a href="${mensajePreventa}" target="_blank" class="btn btn-preventa">Pedir en preventa</a>`;
-
-    const entregaHtml = hayStock
-      ? ``
-      : `<div class="entrega">Entrega: ${fechaEntregaMas7Dias()}</div>`;
+      `https://wa.me/${numero}?text=Preventa%20${item.codigo}`;
 
     contenedor.innerHTML += `
       <div class="card">
-        <img src="${item.link}" alt="${item.codigo}">
+        <img src="${item.link}" onclick="abrirModal('${item.link}')">
         <div class="card-content">
-          ${estadoHtml}
-          ${tallasHtml}
-          ${botonHtml}
-          ${entregaHtml}
+          <div class="estado ${hayStock ? 'ok':'preventa'}">
+            ${hayStock ? '✅ Stock disponible':'🟠 Preventa'}
+          </div>
+
+          <div class="tallas">
+            ${tallas.length ? 'Tallas: ' + tallas.join(', ') : 'Sin stock'}
+          </div>
+
+          <a href="${hayStock ? mensajeStock : mensajePreventa}" target="_blank"
+             class="btn ${hayStock ? 'btn-stock':'btn-preventa'}">
+             ${hayStock ? 'Pedir por WhatsApp':'Pedir preventa'}
+          </a>
         </div>
       </div>
     `;
