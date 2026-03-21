@@ -1,323 +1,403 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stock Disponible</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Disponible</title>
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f1e8;
-      color: #222;
-    }
+<style>
+*{box-sizing:border-box;}
 
-    .container {
-      max-width: 1400px;
-      margin: auto;
-      padding: 20px;
-    }
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+}
 
-    .titulo {
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 24px;
-      letter-spacing: 1px;
-    }
+body{
+  font-family: Arial, sans-serif;
+  background:#f3f0df;
+  color:#222;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px 14px;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-      display: flex;
-      flex-direction: column;
-      border: 1px solid #ece7d8;
-    }
+h2{
+  margin:0 0 20px 0;
+  font-size:28px;
+}
 
-    .card-img-wrap {
-      width: 100%;
-      background: #eee;
-      aspect-ratio: 4 / 5;
-      overflow: hidden;
-    }
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:18px;
+}
 
-    .card-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+/* CARD */
+.card{
+  background:#f8f4e8;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,0.10);
+  border:1px solid rgba(0,0,0,0.04);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
 
-    .card-body {
-      padding: 14px 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 24px rgba(0,0,0,0.14);
+}
 
-    .card-title {
-      font-size: 22px;
-      font-weight: 800;
-      text-transform: uppercase;
-      line-height: 1.1;
-      color: #222;
-    }
+/* IMAGEN */
+.card-img-wrap{
+  overflow:hidden;
+  cursor:pointer;
+  background:#f8f4e8;
+}
 
-    .card-subtitle {
-      font-size: 14px;
-      font-weight: 700;
-      color: #6f6f6f;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
+.card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:contain;
+  display:block;
+  transition:transform .4s ease;
+}
 
-    .card-extra {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 2px;
-    }
+.card:hover img{
+  transform:scale(1.05);
+}
 
-    .campo {
-      font-size: 13px;
-      color: #444;
-      line-height: 1.35;
-    }
+/* CONTENIDO */
+.card-content{
+  padding:14px 14px 16px;
+}
 
-    .campo strong {
-      color: #222;
-    }
+.descripcion{
+  text-align:center;
+  font-size:15px;
+  letter-spacing:2px;
+  color:#6b6658;
+  text-transform:uppercase;
+  margin-bottom:10px;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(0,0,0,0.08);
+}
 
-    .descripcion {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.4;
-      margin-top: 2px;
-    }
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:12px;
+  margin-bottom:10px;
+}
 
-    .precio {
-      font-size: 42px;
-      font-weight: 900;
-      color: #3a3227;
-      line-height: 1;
-      margin-top: 10px;
-    }
+.tela{
+  font-size:14px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:#6f6a5d;
+  font-weight:600;
+}
 
-    .precio small {
-      font-size: 20px;
-      font-weight: 700;
-      margin-right: 4px;
-    }
+.precio{
+  font-size:22px;
+  font-weight:800;
+  color:#333;
+  white-space:nowrap;
+}
 
-    .tallas {
-      margin-top: 6px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #f3f0e8;
-      text-align: center;
-      font-weight: 700;
-      font-size: 14px;
-      color: #4d4d4d;
-      letter-spacing: 1px;
-    }
+.tallas{
+  text-align:center;
+  font-size:14px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:#5f5a4f;
+  margin:10px 0 12px;
+  padding:6px 10px;
+  background:rgba(0,0,0,0.04);
+  border-radius:8px;
+}
 
-    .estado {
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 15px;
-      font-weight: 700;
-      padding: 10px 12px;
-      border-radius: 10px;
-    }
+.estado{
+  text-align:center;
+  font-weight:700;
+  font-size:15px;
+  margin:8px 0 10px;
+}
 
-    .estado.disponible {
-      background: #eef9ef;
-      color: #1f7a30;
-    }
+.estado.ok{
+  color:#178f30;
+}
 
-    .estado.preventa {
-      background: #fff7df;
-      color: #9b7800;
-    }
+.estado.preventa{
+  color:#9a6a00;
+}
 
-    .check {
-      font-size: 16px;
-      font-weight: 900;
-    }
+.entrega{
+  text-align:center;
+  font-size:12px;
+  color:#6f6a5d;
+  margin-top:6px;
+  line-height:1.35;
+}
 
-    .btn-whatsapp {
-      margin-top: 10px;
-      display: block;
-      width: 100%;
-      border: none;
-      text-align: center;
-      text-decoration: none;
-      background: #1ec94c;
-      color: #fff;
-      font-weight: 800;
-      font-size: 18px;
-      padding: 14px 10px;
-      border-radius: 14px;
-      transition: 0.2s ease;
-    }
+/* BOTÓN */
+.btn{
+  display:block;
+  width:100%;
+  margin-top:12px;
+  padding:12px 10px;
+  color:#fff;
+  text-decoration:none;
+  border-radius:12px;
+  font-weight:700;
+  font-size:14px;
+  text-align:center;
+}
 
-    .btn-whatsapp:hover {
-      background: #18b441;
-    }
+.btn-stock{
+  background:#20d15a;
+}
 
-    @media (max-width: 768px) {
-      .container {
-        padding: 14px;
-      }
+.btn-preventa{
+  background:#111;
+}
 
-      .grid {
-        gap: 14px;
-      }
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  padding:20px;
+}
 
-      .card-title {
-        font-size: 18px;
-      }
+.modal img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:12px;
+  background:#fff;
+}
 
-      .precio {
-        font-size: 34px;
-      }
+.cerrar{
+  position:absolute;
+  top:16px;
+  right:24px;
+  color:#fff;
+  font-size:38px;
+  cursor:pointer;
+  line-height:1;
+}
 
-      .precio small {
-        font-size: 17px;
-      }
+/* TABLET */
+@media (max-width:950px){
+  .grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}
 
-      .btn-whatsapp {
-        font-size: 16px;
-        padding: 12px 8px;
-      }
-    }
-  </style>
+/* CEL */
+@media (max-width:600px){
+  .grid{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+
+  .card:hover{
+    transform:none;
+  }
+
+  .card:hover img{
+    transform:none;
+  }
+
+  .descripcion{
+    font-size:14px;
+    letter-spacing:1.5px;
+  }
+
+  .tela{
+    font-size:13px;
+    letter-spacing:2px;
+  }
+
+  .precio{
+    font-size:20px;
+  }
+
+  .tallas{
+    font-size:13px;
+    letter-spacing:2px;
+  }
+
+  .estado{
+    font-size:14px;
+  }
+
+  .btn{
+    font-size:13px;
+  }
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h1 class="titulo">Stock Disponible</h1>
-    <div class="grid" id="productosGrid"></div>
-  </div>
 
-  <script>
-    const productos = [
-      {
-        tela: "Win Fresh",
-        codigo: "FUT172",
-        descripcion: "Chaleco Hombre Futsalero",
-        link: "https://res.cloudinary.com/demo/image/upload/sample.jpg",
-        precio: 25,
-        stock: 1,
-        talla10: 0,
-        talla12: 0,
-        talla14: 0,
-        talla16: 0,
-        tallaL: 0,
-        tallaM: 1,
-        tallaS: 0
-      },
-      {
-        tela: "Win Fresh",
-        codigo: "FUT173",
-        descripcion: "Chaleco Hombre Futsalero",
-        link: "https://res.cloudinary.com/demo/image/upload/sample.jpg",
-        precio: 25,
-        stock: 0,
-        talla10: 0,
-        talla12: 0,
-        talla14: 0,
-        talla16: 0,
-        tallaL: 0,
-        tallaM: 0,
-        tallaS: 0
-      }
-    ];
+<div class="container">
+  <h2>🔥 Stock Disponible</h2>
+  <div class="grid" id="catalogo"></div>
+</div>
 
-    const numeroWhatsapp = "51912381233";
+<div class="modal" id="modal">
+  <span class="cerrar" onclick="cerrarModal()">×</span>
+  <img id="imgModal" alt="Vista previa">
+</div>
 
-    function obtenerTallasDisponibles(producto) {
-      const mapa = [
-        { key: "talla10", label: "10" },
-        { key: "talla12", label: "12" },
-        { key: "talla14", label: "14" },
-        { key: "talla16", label: "16" },
-        { key: "tallaS", label: "S" },
-        { key: "tallaM", label: "M" },
-        { key: "tallaL", label: "L" }
-      ];
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-      return mapa
-        .filter(t => Number(producto[t.key]) > 0)
-        .map(t => t.label);
-    }
+const firebaseConfig = {
+  apiKey: "AIzaSyDIo_-P6TV2ZkDIo_fVzq_Ty0Z_xMtZHM",
+  authDomain: "stockingenio.firebaseapp.com",
+  projectId: "stockingenio",
+  storageBucket: "stockingenio.firebasestorage.app",
+  messagingSenderId: "1052238909039",
+  appId: "1:1052238909039:web:bd620817ee76e9853a66aa"
+};
 
-    function crearMensajeWhatsApp(producto) {
-      return encodeURIComponent(
-        `Hola, quiero pedir este producto:%0A` +
-        `${producto.descripcion}%0A` +
-        `Tela: ${producto.tela}%0A` +
-        `Código: ${producto.codigo}%0A` +
-        `Precio: S/ ${producto.precio}`
-      );
-    }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    function crearCard(producto) {
-      const tallasDisponibles = obtenerTallasDisponibles(producto);
-      const tieneStock = Number(producto.stock) > 0;
-      const estadoClase = tieneStock ? "disponible" : "preventa";
-      const estadoTexto = tieneStock ? "Stock disponible" : "Stock para Producción";
-      const whatsappLink = `https://wa.me/${numeroWhatsapp}?text=${crearMensajeWhatsApp(producto)}`;
+const contenedor = document.getElementById("catalogo");
+const numero = "51912381233";
 
-      return `
-        <div class="card">
-          <div class="card-img-wrap">
-            <img class="card-img" src="${producto.link}" alt="${producto.descripcion}">
-          </div>
+window.abrirModal = function(src){
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("imgModal").src = src;
+};
 
-          <div class="card-body">
-            <div class="card-title">${producto.descripcion}</div>
-            <div class="card-subtitle">${producto.tela}</div>
+window.cerrarModal = function(){
+  document.getElementById("modal").style.display = "none";
+};
 
-            <div class="card-extra">
-              <div class="campo"><strong>Código:</strong> ${producto.codigo}</div>
-              <div class="descripcion">${producto.descripcion}</div>
-            </div>
+function obtenerTallasDisponibles(item){
+  const tallas = [];
 
-            <div class="precio"><small>S/</small>${producto.precio}</div>
+  if (Number(item.talla10 || 0) > 0) tallas.push("10");
+  if (Number(item.talla12 || 0) > 0) tallas.push("12");
+  if (Number(item.talla14 || 0) > 0) tallas.push("14");
+  if (Number(item.talla16 || 0) > 0) tallas.push("16");
 
-            <div class="tallas">
-              ${tallasDisponibles.length ? tallasDisponibles.join(" / ") : "PRE-VENTA"}
-            </div>
+  if (Number(item.tallaS || 0) > 0) tallas.push("S");
+  if (Number(item.tallaM || 0) > 0) tallas.push("M");
+  if (Number(item.tallaL || 0) > 0) tallas.push("L");
 
-            <div class="estado ${estadoClase}">
-              <span class="check">✔</span>
-              <span>${estadoTexto}</span>
-            </div>
+  if (Number(item.tallaSD || 0) > 0) tallas.push("SD");
+  if (Number(item.tallaMD || 0) > 0) tallas.push("MD");
+  if (Number(item.tallaLD || 0) > 0) tallas.push("LD");
 
-            <a class="btn-whatsapp" href="${whatsappLink}" target="_blank">
-              Pedir por WhatsApp
-            </a>
-          </div>
+  return tallas;
+}
+
+function fechaEntregaMas7Dias(){
+  const fecha = new Date();
+  fecha.setDate(fecha.getDate() + 7);
+
+  return fecha.toLocaleDateString("es-PE", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+function formatearPrecio(precio){
+  return `S/ ${Number(precio || 0)}`;
+}
+
+async function cargarCatalogo(){
+  const ref = doc(db, "catalogos", "stock");
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return;
+
+  const productos = snap.data().productos || [];
+
+  productos.forEach(item => {
+    const tallas = obtenerTallasDisponibles(item);
+    const hayStock = Number(item.stock || 0) > 0 && tallas.length > 0;
+
+    const descripcion = item.descripcion || "";
+    const tela = item.Tela || item.tela || "";
+
+    const mensajeStock =
+      `https://wa.me/${numero}?text=` +
+      `🔥%20Quiero%20esta%20prenda%20en%20stock%0A%0A` +
+      `👕%20Modelo:%20${encodeURIComponent(item.codigo || "")}%0A` +
+      `🧵%20Tela:%20${encodeURIComponent(tela)}%0A` +
+      `📏%20Tallas:%20${encodeURIComponent(tallas.join(" / "))}%0A` +
+      `💰%20Precio:%20${encodeURIComponent(formatearPrecio(item.precio))}%0A` +
+      `🖼️%20Imagen:%20${encodeURIComponent(item.link || "")}`;
+
+    const mensajePreventa =
+      `https://wa.me/${numero}?text=` +
+      `🟠%20Quiero%20pedir%20esta%20prenda%20en%20preventa%0A%0A` +
+      `👕%20Modelo:%20${encodeURIComponent(item.codigo || "")}%0A` +
+      `🧵%20Tela:%20${encodeURIComponent(tela)}%0A` +
+      `💰%20Precio:%20${encodeURIComponent(formatearPrecio(item.precio))}%0A` +
+      `📦%20Entrega:%20${encodeURIComponent(fechaEntregaMas7Dias())}%0A` +
+      `🖼️%20Imagen:%20${encodeURIComponent(item.link || "")}`;
+
+    const estadoHtml = hayStock
+      ? `<div class="estado ok">✅ Stock disponible</div>`
+      : `<div class="estado preventa">PRE-VENTA</div>`;
+
+    const tallasHtml = hayStock
+      ? `<div class="tallas">${tallas.join(" / ")}</div>`
+      : `<div class="tallas">Bajo pedido</div>`;
+
+    const botonHtml = hayStock
+      ? `<a href="${mensajeStock}" target="_blank" class="btn btn-stock">🟢 Pedir por WhatsApp</a>`
+      : `<a href="${mensajePreventa}" target="_blank" class="btn btn-preventa">Pedir en preventa</a>`;
+
+    const entregaHtml = hayStock
+      ? ``
+      : `<div class="entrega">Entrega estimada: ${fechaEntregaMas7Dias()}</div>`;
+
+    contenedor.innerHTML += `
+      <div class="card">
+        <div class="card-img-wrap">
+          <img src="${item.link}" alt="Producto" onclick="abrirModal('${item.link}')">
         </div>
-      `;
-    }
 
-    document.getElementById("productosGrid").innerHTML = productos.map(crearCard).join("");
-  </script>
+        <div class="card-content">
+          <div class="descripcion">${descripcion}</div>
+
+          <div class="info-row">
+            <div class="tela">${tela}</div>
+            <div class="precio">${formatearPrecio(item.precio)}</div>
+          </div>
+
+          ${tallasHtml}
+          ${estadoHtml}
+          ${entregaHtml}
+          ${botonHtml}
+        </div>
+      </div>
+    `;
+  });
+}
+
+cargarCatalogo();
+</script>
+
 </body>
 </html>
