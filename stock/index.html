@@ -3,146 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stock Disponible</title>
+<title>Catálogo</title>
 
 <style>
 *{box-sizing:border-box;}
 
-html, body{
-  margin:0;
-  padding:0;
-  overflow-x:hidden;
-}
-
 body{
   font-family:Arial, sans-serif;
   background:#f2f2f2;
+  margin:0;
 }
 
-/* CONTENEDOR */
 .container{
-  max-width:1100px;
+  max-width:1300px;
   margin:auto;
   padding:20px;
 }
 
-h2{
-  margin-bottom:20px;
-}
-
-/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
+  grid-template-columns:repeat(4, 1fr);
+  gap:20px;
 }
 
-/* CARD */
 .card{
   background:#fff;
   border-radius:14px;
   overflow:hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,0.12);
-  cursor:pointer;
-  transition:0.25s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  transition:0.3s;
 }
 
 .card:hover{
-  transform:translateY(-4px);
+  transform:scale(1.03);
 }
 
-/* IMAGEN */
-.card img{
+/* imagen cuadrada */
+.img-container{
   width:100%;
-  aspect-ratio:3/4;
-  object-fit:contain;
+  aspect-ratio:1/1;
+  overflow:hidden;
   background:#fff;
-  transition: transform 0.4s ease;
 }
 
-.card:hover img{
-  transform:scale(1.08);
+.img-container img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  transition:0.3s;
 }
 
-/* CONTENIDO */
-.card-content{
-  padding:12px;
-  text-align:center;
+.img-container:hover img{
+  transform:scale(1.1);
 }
 
-.estado{
+.info{
+  padding:15px;
+}
+
+.nombre{
   font-weight:bold;
-  margin-bottom:8px;
-}
-
-.estado.ok{ color:#138a36; }
-.estado.preventa{ color:#c46b00; }
-
-.tallas{
-  font-size:14px;
   margin-bottom:10px;
 }
 
-.entrega{
-  font-size:13px;
-  color:#666;
+.precio{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:10px;
 }
 
-/* BOTÓN */
+.stock{
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.tallas{
+  font-size:13px;
+  margin-bottom:12px;
+}
+
 .btn{
   display:block;
-  margin-top:10px;
+  text-align:center;
   padding:10px;
-  color:#fff;
-  text-decoration:none;
   border-radius:8px;
+  text-decoration:none;
   font-weight:bold;
 }
 
-.btn-stock{ background:#25D366; }
-.btn-preventa{ background:#111; }
-
-/* 🔥 MODAL */
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.9);
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-
-.modal img{
-  max-width:90%;
-  max-height:90%;
-  border-radius:12px;
-}
-
-.cerrar{
-  position:absolute;
-  top:20px;
-  right:30px;
+.btn-pedir{
+  background:#111;
   color:#fff;
-  font-size:35px;
-  cursor:pointer;
 }
 
-/* RESPONSIVE */
-@media (max-width:900px){
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+.btn-preventa{
+  background:#999;
+  color:#fff;
 }
 
-@media (max-width:600px){
-  .grid{
-    grid-template-columns:1fr;
-  }
+/* responsive */
+@media(max-width:1000px){
+  .grid{grid-template-columns:repeat(2,1fr);}
+}
 
-  .card:hover img{
-    transform:none;
-  }
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -150,119 +115,56 @@ h2{
 <body>
 
 <div class="container">
-  <h2>🔥 Stock Disponible</h2>
-  <div class="grid" id="catalogo"></div>
+  <div class="grid" id="productos"></div>
 </div>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <span class="cerrar" onclick="cerrarModal()">×</span>
-  <img id="imgModal">
-</div>
+<script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+// 🔥 SIMULACIÓN DE TUS DATOS (REEMPLAZAR POR FIREBASE)
+const productosData = [
+  {
+    codigo: "FUT172",
+    link: "https://via.placeholder.com/300",
+    precio: 25,
+    stock: 1,
+    talla10: 0,
+    talla12: 0,
+    talla14: 0,
+    talla16: 0,
+    tallaS: 0,
+    tallaM: 1,
+    tallaL: 0
+  },
+  {
+    codigo: "FUT200",
+    link: "https://via.placeholder.com/300",
+    precio: 35,
+    stock: 0,
+    talla10: 0,
+    talla12: 0,
+    talla14: 0,
+    talla16: 0,
+    tallaS: 0,
+    tallaM: 0,
+    tallaL: 0
+  }
+];
 
-/* FIREBASE */
-const firebaseConfig = {
-  apiKey: "AIzaSyDIo_-P6TV2ZkDIo_fVzq_Ty0Z_xMtZHM",
-  authDomain: "stockingenio.firebaseapp.com",
-  projectId: "stockingenio",
-  storageBucket: "stockingenio.firebasestorage.app",
-  messagingSenderId: "1052238909039",
-  appId: "1:1052238909039:web:bd620817ee76e9853a66aa"
-};
+const contenedor = document.getElementById("productos");
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+productosData.forEach(prod => {
 
-const contenedor = document.getElementById("catalogo");
-const numero = "51912381233";
+  const disponible = prod.stock > 0;
 
-/* FUNCIONES */
-function obtenerTallasDisponibles(item){
-  const tallas = [];
+  // 🔹 GENERAR TALLAS AUTOMÁTICAS
+  const tallasDisponibles = [];
 
-  if (item.talla10 > 0) tallas.push("10");
-  if (item.talla12 > 0) tallas.push("12");
-  if (item.talla14 > 0) tallas.push("14");
-  if (item.talla16 > 0) tallas.push("16");
-  if (item.tallaS > 0) tallas.push("S");
-  if (item.tallaM > 0) tallas.push("M");
-  if (item.tallaL > 0) tallas.push("L");
-  if (item.tallaSD > 0) tallas.push("SD");
-  if (item.tallaMD > 0) tallas.push("MD");
-  if (item.tallaLD > 0) tallas.push("LD");
+  if(prod.talla10 > 0) tallasDisponibles.push("10");
+  if(prod.talla12 > 0) tallasDisponibles.push("12");
+  if(prod.talla14 > 0) tallasDisponibles.push("14");
+  if(prod.talla16 > 0) tallasDisponibles.push("16");
+  if(prod.tallaS > 0) tallasDisponibles.push("S");
+  if(prod.tallaM > 0) tallasDisponibles.push("M");
+  if(prod.tallaL > 0) tallasDisponibles.push("L");
 
-  return tallas;
-}
-
-function fechaEntregaMas7Dias(){
-  const fecha = new Date();
-  fecha.setDate(fecha.getDate() + 7);
-
-  return fecha.toLocaleDateString("es-PE", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  });
-}
-
-/* MODAL */
-window.abrirModal = function(src){
-  document.getElementById("modal").style.display = "flex";
-  document.getElementById("imgModal").src = src;
-}
-
-window.cerrarModal = function(){
-  document.getElementById("modal").style.display = "none";
-}
-
-/* CARGAR DATOS */
-async function cargarCatalogo(){
-  const ref = doc(db, "catalogos", "stock");
-  const snap = await getDoc(ref);
-
-  if (!snap.exists()) return;
-
-  const productos = snap.data().productos;
-
-  productos.forEach(item => {
-
-    const tallas = obtenerTallasDisponibles(item);
-    const hayStock = item.stock > 0;
-
-    const mensajeStock =
-      `https://wa.me/${numero}?text=Quiero%20${item.codigo}`;
-
-    const mensajePreventa =
-      `https://wa.me/${numero}?text=Preventa%20${item.codigo}`;
-
-    contenedor.innerHTML += `
-      <div class="card">
-        <img src="${item.link}" onclick="abrirModal('${item.link}')">
-        <div class="card-content">
-          <div class="estado ${hayStock ? 'ok':'preventa'}">
-            ${hayStock ? '✅ Stock disponible':'🟠 Preventa'}
-          </div>
-
-          <div class="tallas">
-            ${tallas.length ? 'Tallas: ' + tallas.join(', ') : 'Sin stock'}
-          </div>
-
-          <a href="${hayStock ? mensajeStock : mensajePreventa}" target="_blank"
-             class="btn ${hayStock ? 'btn-stock':'btn-preventa'}">
-             ${hayStock ? 'Pedir por WhatsApp':'Pedir preventa'}
-          </a>
-        </div>
-      </div>
-    `;
-  });
-}
-
-cargarCatalogo();
-</script>
-
-</body>
-</html>
+  const tallasHTML = tallasDisponibles.join("
