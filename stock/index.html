@@ -331,6 +331,15 @@ async function cargarCatalogo(){
 
   const productos = snap.data().productos || [];
 
+  productos.sort((a, b) => {
+  const stockA = Number(a.stock || 0);
+  const stockB = Number(b.stock || 0);
+
+  return stockB - stockA; // mayor stock primero
+});
+  
+  
+
   productos.forEach(item => {
     const tallas = obtenerTallasDisponibles(item);
     const hayStock = Number(item.stock || 0) > 0 && tallas.length > 0;
